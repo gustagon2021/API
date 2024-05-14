@@ -1,0 +1,49 @@
+from flask import Flask, jsonify
+
+app = Flask(__name__)
+
+# Simulando datos de facturación
+datos_facturacion = {
+    "numero_factura": "12345",
+    "empresa": {
+        "razon_social": "Nombre de la empresa",
+        "CUIL": "12345678901",
+        "direccion": "Calle 123, Ciudad, País"
+    },
+    "cliente": {
+        "ID": "54321",
+        "DNI": "12345678",
+        "nombre": "Juan",
+        "apellido": "Pérez"
+    },
+    "productos": [
+        {
+            "ID": "001",
+            "cantidad": 2,
+            "descripcion": "Producto 1",
+            "precio": 10
+        },
+        {
+            "ID": "002",
+            "cantidad": 1,
+            "descripcion": "Producto 2",
+            "precio": 20
+        }
+    ],
+    "descuentos": [
+        {
+            "tipo": "Descuento por promoción",
+            "monto": 5
+        }
+    ],
+    "total": 25,
+    "fecha": "2024-05-08",
+    "domicilio_entrega": "Calle 456, Ciudad, País"
+}
+
+@app.route('/facturacion', methods=['GET'])
+def obtener_facturacion():
+    return jsonify(datos_facturacion)
+
+if __name__ == '__main__':
+    app.run(debug=True)
