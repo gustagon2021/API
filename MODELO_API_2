@@ -1,0 +1,43 @@
+openapi: 3.0.0
+info:
+  title: Facturacion API
+  version: 1.0.0
+paths:
+  /procesarFactura:
+    post:
+      summary: Procesar una factura
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                factura:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    cliente:
+                      type: object
+                      properties:
+                        nombre:
+                          type: string
+                        direccion:
+                          type: string
+                    metodoPago:
+                      type: object
+                      properties:
+                        tipo:
+                          type: string
+                        detalles:
+                          type: string
+              required:
+                - id
+                - cliente
+                - metodoPago
+      responses:
+        '200':
+          description: Factura procesada exitosamente
+        '400':
+          description: Solicitud incorrecta
