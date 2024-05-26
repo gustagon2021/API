@@ -1,0 +1,66 @@
+from flask import Flask, jsonify
+
+app = Flask(__name__)
+
+# Simulando datos de facturación
+datos_facturacion = {
+    "numero_factura": "12345",
+    "empresa": {
+        "razon_social": "Nombre de la empresa",
+        "CUIL": "12345678901",
+        "direccion": "Calle 123, Ciudad, País"
+    },
+    "cliente": {
+        "ID": "54321",
+        "DNI": "12345678",
+        "nombre": "Juan",
+        "apellido": "Pérez"
+    },
+    "productos": [
+        {
+            "ID": "001",
+            "cantidad": 2,
+            "descripcion": "Producto 1",
+            "precio": 10,
+            "descuento": 0  # Inicialmente, el descuento es cero
+        },
+        {
+            "ID": "002",
+            "cantidad": 1,
+            "descripcion": "Producto 2",
+            "precio": 20,
+            "descuento": 0  # Inicialmente, el descuento es cero
+        }
+    ],
+    "descuentos": [
+        {
+            "tipo": "Descuento por promoción",
+            "monto": 5,
+            "productos_aplicables": ["001", "002"]  # Descuento aplicable a estos productos
+        }
+    ],
+    "total": 25,
+    "fecha": "2024-05-08",
+    "domicilio_entrega": "Calle 456, Ciudad, País"
+}
+
+def calcular_descuento_producto(producto, descuentos):
+    descuento_total = 0
+    for descuento in descuentos:
+        if producto["ID"] in descuento.get("productos_aplicables", []):
+            descuento_total += descuento["monto"]
+    return descuento_total
+
+@app.route('/facturacion', methods=['GET'])
+def obtener_facturacion():
+    for producto in datos_facturacion["productos"]:
+        descuento = calcular_descuento_producto(producto, datos_facturacion["descuentos"])
+        producto["descuento"] = descuento
+
+    total_productos = sum((producto["precio"] - producto["descuento"]) * producto["cantidad"] for producto in datos_facturacion["productos"])
+    datos_facturacion["total"] = total_productos
+
+    return jsonify(datos_facturacion)
+
+if __name__ == '__main__':
+    app.run(debug=True)
